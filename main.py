@@ -54,7 +54,7 @@ def add_video_to_cache(cache_id, video_id):
     videos_and_caches[cache_id] += [video_id]
 
 def generate_output():
-    print(len(videos_and_caches.keys()))
+    print(len(list(videos_and_caches.keys())))
     for cache, videos in  videos_and_caches.items():
         print("%d %s"%(cache, " ".join([str(v) for v in videos])))
 
@@ -63,7 +63,7 @@ eof = input_file.readline()
 assert not eof, "I got: `%s`" % eof
 # CODE HERE
 
-add_video_to_cache(1,i)
+add_video_to_cache(1,1)
 add_video_to_cache(1,2)
 add_video_to_cache(1,3)
 add_video_to_cache(2,1)
