@@ -18,4 +18,4 @@ echo "<<<<OUTPUT<<<<<" >> $FILE
 echo "" >> $FILE
 echo "" >> $FILE
 echo "$RESULT"
-echo "$RESULT" > output.out
+echo "$RESULT" > out_files/$1.out

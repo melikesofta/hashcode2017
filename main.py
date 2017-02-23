@@ -39,7 +39,7 @@ for request in range(R):
 
 
 def get_endpoint_video_requests(video_id, endpoint_id):
-    return endpoint_video_requests.get([video_id, endpoint_id], 0)
+    return endpoint_video_requests.get((video_id, endpoint_id), 0)
 
 
 videos_and_caches = {}
@@ -50,23 +50,48 @@ def add_video_to_cache(cache_id, video_id):
     if video_id in videos_and_caches[cache_id]:
         raise Exception("Video already added")
     cache_sizes[cache_id] -= Vsizes[video_id]
-    assert  cache_sizes[cache_id] >= 0, "There is no enough space on cache"
+    assert cache_sizes[cache_id] >= 0, "There is no enough space on cache"
     videos_and_caches[cache_id] += [video_id]
+
+
+def can_add_video_to_cache(cache_id, video_id):
+    videos = videos_and_caches.get(cache_id, [])
+    if video_id in videos:
+        return False
+    if cache_sizes[cache_id] < Vsizes[video_id]:
+        return False
+    return True
+
 
 def generate_output():
     print(len(list(videos_and_caches.keys())))
-    for cache, videos in  videos_and_caches.items():
-        print("%d %s"%(cache, " ".join([str(v) for v in videos])))
+    for cache, videos in videos_and_caches.items():
+        print("%d %s" % (cache, " ".join([str(v) for v in videos])))
+
 
 # Check if all values are used
 eof = input_file.readline()
 assert not eof, "I got: `%s`" % eof
 # CODE HERE
 
-add_video_to_cache(1,1)
-add_video_to_cache(1,2)
-add_video_to_cache(1,3)
-add_video_to_cache(2,1)
+# for video_id in range(V):
+#     for cache_id in range(C):
+#         if can_add_video_to_cache(cache_id, video_id):
+#             add_video_to_cache(cache_id, video_id)
+#             break
+for cache_id in range(C):
+    requests  = []
+    for endpoint_id in range(E):
+        if get_cache_latency(cache_id, endpoint_id) is not None:
+            for video_id in range(V):
+                number_of_requests = get_endpoint_video_requests(video_id, endpoint_id)
+                if number_of_requests:
+                    requests.append([video_id, number_of_requests])
+    requests = sorted(requests,reverse=True, key=lambda x: x[1])
+    requests = [t[0] for t in requests]
+    for video_id in requests:
+        if can_add_video_to_cache(cache_id, video_id):
+            add_video_to_cache(cache_id, video_id)
 
 
 generate_output()
