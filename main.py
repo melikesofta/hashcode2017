@@ -79,6 +79,7 @@ assert not eof, "I got: `%s`" % eof
 #         if can_add_video_to_cache(cache_id, video_id):
 #             add_video_to_cache(cache_id, video_id)
 #             break
+add_videos = [] # [cache_id, video_id]
 for cache_id in range(C):
     requests  = []
     for endpoint_id in range(E):
@@ -90,8 +91,18 @@ for cache_id in range(C):
     requests = sorted(requests,reverse=True, key=lambda x: x[1])
     requests = [t[0] for t in requests]
     for video_id in requests:
-        if can_add_video_to_cache(cache_id, video_id):
-            add_video_to_cache(cache_id, video_id)
-
+        add_videos.append([cache_id, video_id])
+        #if can_add_video_to_cache(cache_id, video_id):
+        #    add_video_to_cache(cache_id, video_id)
+add_videos = sorted(add_videos, reverse=True, key=lambda x: x[1])
+for endpoint_id in range(E):
+    # go over add_videos
+    video = -1
+    for [cache_id, video_id] in add_videos:
+        # if that endpoint requests that video
+        if get_endpoint_video_requests(video_id, endpoint_id) and video_id != video:
+            if can_add_video_to_cache(cache_id, video_id):
+                add_video_to_cache(cache_id, video_id)
+                video = video_id
 
 generate_output()
