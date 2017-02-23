@@ -11,7 +11,7 @@ echo "" >> $FILE
 
 
 echo ">>>>OUTPUT>>>>>" >> $FILE
-python main.py >> $FILE
+python main.py $@ >> $FILE
 echo "" >> $FILE
 echo "<<<<OUTPUT<<<<<" >> $FILE
 echo "" >> $FILE
